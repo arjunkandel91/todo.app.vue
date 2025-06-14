@@ -1,5 +1,12 @@
 <script setup>
-    import { ref } from 'vue';
+    
+    import { ref, useTemplateRef } from 'vue';
+    
+    // vue use
+    import { onClickOutside, useDark, useToggle } from '@vueuse/core';
+
+    // scripts
+    import { FilterTodo, SearchTodoList } from '@/scripts/Todo';
 
     let props = defineProps({
         count: {
@@ -10,13 +17,50 @@
 
     let emit = defineEmits(['add']);
 
+    // dark and light theme toggle 
+    // on the fly if device changes the theme settings
+    const isDark = useDark({
+        selector: 'body',
+        attribute: 'class',
+        valueDark: 'dark-mode',
+        valueLight: ''
+    });
+    const toggleDark = useToggle(isDark);
+
+    let ToggleDarkMode = () => {
+        isDark.value = !isDark.value;
+    };
+
+    // click outside of filter menu
+    let filterMenu = useTemplateRef('filterMenu');
+
     let ShowSearch = ref(false);
     let ShowInput = ref(false);
     let FormError = ref(false);
+    let ShowFilterMenu = ref(false);
+    let SearchTxt = "";
 
     // v-model
     let title = '';
     let description = '';
+
+    onClickOutside(filterMenu, (event) => {
+        ShowFilterMenu.value = false;
+    });
+
+    const Filter = (type) => {
+        if (type !== 'none') {
+
+            FilterMenuContent.value.map(f => {
+                if (f.type == type) f.active = true;
+                else f.active = false;
+                return f;
+            });
+
+            FilterTodo(type);
+            ShowFilterMenu.value = false;
+        }
+    }
 
     const ClearForm = () => {
         title = '';
@@ -34,7 +78,6 @@
 
         // if success move ahead to add task
         let NewTask = {
-            id: Math.round(Math.random() * 1000),
             title: title,
             description: description
         }
@@ -46,6 +89,40 @@
         ClearForm();
     }
 
+
+    const FilterMenuContent = ref([
+        {
+            id: 1,
+            name: 'Sort by',
+            type: 'none',
+            active: false
+        },
+        {
+            id: 2,
+            name: 'Todo Title',
+            type: 'title',
+            active: false
+        },
+        {
+            id: 3,
+            name: 'Incomplete (default)',
+            type: 'incomplete',
+            active: true
+        },
+        {
+            id: 4,
+            name: 'Completed',
+            type: 'completed',
+            active: false
+        },
+        {
+            id: 5,
+            name: 'Created date',
+            type: 'date',
+            active: false
+        }
+    ]);
+
 </script>
 
 <template>
@@ -55,11 +132,19 @@
             <div class="actions">
                 <img v-if="!ShowSearch" src="./../images/search.svg" @click="ShowSearch = true">
                 <div v-if="ShowSearch" class="search-box">
-                    <input type="text" placeholder="Search">
+                    <input type="text" placeholder="Search" v-model="SearchTxt" @keyup="SearchTodoList(SearchTxt)">
                     <img @click="ShowSearch = false" src="./../images/close.svg" />
                 </div>
-                <img src="./../images/filter.svg">
-                <img src="./../images/mode.svg">
+                <img src="./../images/filter.svg" @click="ShowFilterMenu = true">
+                <div v-if="ShowFilterMenu" class="filter-todo" ref="filterMenu">
+                    <ul>
+                        <li :class="menu.active ? 'active' : null" v-for="menu in FilterMenuContent" :key="menu.id" @click="Filter(menu.type)">
+                            <span><img src="./../images/check.svg" /></span>
+                            <p>{{ menu.name }}</p>
+                        </li>
+                    </ul>
+                </div>
+                <img src="./../images/mode.svg" @click="ToggleDarkMode">
             </div>
         </div>
 

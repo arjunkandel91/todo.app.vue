@@ -1,4 +1,6 @@
 <script setup>
+    
+    import { ref } from 'vue';
 
     // props
     const props = defineProps({
@@ -9,24 +11,43 @@
     });
 
     // emits
-    const emit = defineEmits(['edit', 'delete', 'editCancel']);
+    const emit = defineEmits(['editInit', 'edit', 'delete', 'editCancel']);
+
+    let FormError = ref(false);
+    let title = props.todo.title;
+    let description = props.todo.description;
+
+    const Submit = () => {
+        // validation
+        if (title.length <= 4) {
+            FormError.value = true;
+            return;
+        }
+
+        emit('edit', props.todo.id, title, description);
+    };
 
 </script>
 
 <template>
-    <li :class="[todo.completed ? 'complete' : null, todo.edit ? 'edit' : null]">
+    <li v-if="!todo.hide" :class="[todo.completed ? 'complete' : null, todo.edit ? 'edit' : null]">
         <div class="radio" @click="todo.completed = !todo.completed"></div>
-        <div class="content">
+        <div v-if="!todo.edit" class="content">
             <h3>{{ todo.title }}</h3>
             <p>{{ todo.description }}</p>
         </div>
+        <div v-else class="content">
+            <input :class="FormError ? '__error' : null" type="text" placeholder="Title" v-model="title">
+            <p v-if="FormError" class="__error_txt">Todo title is required!</p>
+            <input type="text" placeholder="Description" v-model="description">
+        </div>
         <div class="action">
-            <img v-if="!todo.completed" src="./../images/edit.svg" @click="emit('edit', todo)"> 
+            <img v-if="!todo.completed" src="./../images/edit.svg" @click="emit('editInit', todo)"> 
             <img @click="emit('delete', todo)" src="./../images/delete.svg">
         </div>
         <div class="editaction">
             <button @click="emit('editCancel')">Cancel</button>
-            <button class="addbtn">Save</button>
+            <button class="addbtn" @click="Submit">Save</button>
         </div>
     </li>
 </template>

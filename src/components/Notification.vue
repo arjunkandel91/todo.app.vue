@@ -9,7 +9,7 @@
 
 <template>
     <div class="notification">
-        <img src="./../images/bell.png" />
+        <img src="./../images/bell.svg" />
         <p>{{ content }}</p>
     </div>
 </template>
