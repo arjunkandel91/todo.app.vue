@@ -5,13 +5,13 @@
 
   // scripts
   import Storage from './scripts/Storage';
-  import { TodoList, TodoUniqueId, NotifyPop } from './scripts/Todo';
+  import { TodoList, FilterTodo, TodoUniqueId, NotifyPop } from './scripts/Todo';
 
   // components
   import { TodoWrap, TodoHeader, TodoCard, 
-            EmptyTask, Skeleton, DeleteModel, Notification } from './components';
-
-  const isLoading = ref(true);
+  EmptyTask, DeleteModel, Notification } from './components';
+  
+  
   const DeleteTodo = ref({
     show: false,
     task: {}
@@ -76,7 +76,16 @@
 
   // complete or incomplete tasks
   const ToggleComplete = (task) => {
+    TodoList.value.map(t => t.id === task.id ? t.completed = !t.completed : null);
 
+    // default filter
+    FilterTodo('incomplete');
+
+    // update storage
+    Storage.store(TodoList.value);
+
+    // toast notify
+    NotifyPop(Notify, 'Task updated');
   };
 
   const AddNewTask = (task) => {
@@ -91,9 +100,8 @@
   }
 
 
-  // component onMounted
   onMounted(() => {
-    setTimeout(() => isLoading.value = false, 500);
+    FilterTodo('incomplete');
   });
 
 </script>
@@ -112,18 +120,14 @@
                 @editInit="EditTaskInitiate" 
                 @edit="EditTask"  
                 @delete="DeleteInitiate" 
-                @editCancel="EditCancel" />
+                @editCancel="EditCancel"
+                @complete="ToggleComplete" />
     </ul>
     <!-- Task App List /-->
 
     <!-- Empty Task contains element hidden but shown only there are no tasks -->
-    <EmptyTask v-if="TodoList.length === 0 && !isLoading" />
+    <EmptyTask v-if="TodoList.length === 0" />
     <!-- Empty Task /-->
-
-    <!-- Task Loader -- loading state while loading the app and task list -->
-    <!-- This is just an example but useful when we connect with back-end -->
-    <Skeleton v-if="isLoading" />
-    <!-- Task Loader /-->
 
     <!-- Delete Task Modal -->
     <Teleport to="body">

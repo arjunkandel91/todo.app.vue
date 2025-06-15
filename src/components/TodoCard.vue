@@ -11,7 +11,7 @@
     });
 
     // emits
-    const emit = defineEmits(['editInit', 'edit', 'delete', 'editCancel']);
+    const emits = defineEmits(['editInit', 'edit', 'delete', 'editCancel', 'complete']);
 
     let FormError = ref(false);
     let title = props.todo.title;
@@ -24,14 +24,14 @@
             return;
         }
 
-        emit('edit', props.todo.id, title, description);
+        emits('edit', props.todo.id, title, description);
     };
 
 </script>
 
 <template>
     <li v-if="!todo.hide" :class="[todo.completed ? 'complete' : null, todo.edit ? 'edit' : null]">
-        <div class="radio" @click="todo.completed = !todo.completed"></div>
+        <div class="radio" @click="emits('complete', todo)"></div>
         <div v-if="!todo.edit" class="content">
             <h3>{{ todo.title }}</h3>
             <p>{{ todo.description }}</p>
@@ -42,11 +42,11 @@
             <input type="text" placeholder="Description" v-model="description">
         </div>
         <div class="action">
-            <img v-if="!todo.completed" src="./../images/edit.svg" @click="emit('editInit', todo)"> 
-            <img @click="emit('delete', todo)" src="./../images/delete.svg">
+            <img v-if="!todo.completed" src="./../images/edit.svg" @click="emits('editInit', todo)"> 
+            <img @click="emits('delete', todo)" src="./../images/delete.svg">
         </div>
         <div class="editaction">
-            <button @click="emit('editCancel')">Cancel</button>
+            <button @click="emits('editCancel')">Cancel</button>
             <button class="addbtn" @click="Submit">Save</button>
         </div>
     </li>

@@ -2,7 +2,6 @@
     --site-background: #fff;
     --site-orange: #FF9800;
 
-
     --site-white: #ffffff;
     --site-soft-white: #f4f4f4;
     --site-mute-white: #f2f2f2;
@@ -19,7 +18,6 @@
 .dark-mode { /* dark theme */ 
     --site-background: #1a1a1a;
     --site-orange: #FF9800;
-
 
     --site-white: #000000;
     --site-soft-white: #242424;
