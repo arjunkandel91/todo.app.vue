@@ -1,6 +1,6 @@
 <script setup>
 
-  // vue import
+  // vue
   import { ref, onMounted } from 'vue';
 
   // scripts
@@ -11,20 +11,26 @@
   import { TodoWrap, TodoHeader, TodoCard, 
   EmptyTask, DeleteModel, Notification } from './components';
   
-  
+  // todo delete object ref, property [show: true] will show the delete model
+  // and property [task] contains the object which user want to delete
   const DeleteTodo = ref({
     show: false,
     task: {}
   });
 
+  // toast notification object ref, property [show: true] will show the toast
+  // it will be hidden within 2 seconds automatically
+  // property [content] will be updated according to the activity on todo list
   const Notify = ref({
     show: false,
     content: ''
   });
 
-  // user click on the edit icon
-  // this method will enable the task edit mode
-  // the selected task will have property edit: true, and false to other all
+  /**
+   * This function initiate the edit todo
+   * @param {Object} task 
+   * the selected task will have property edit: true, and false to other all
+  */
   const EditTaskInitiate = (task) => {
     TodoList.value.map(todo => {
       if (todo.id == task.id) todo.edit = true;
@@ -32,6 +38,18 @@
       return todo;
     });
   };
+
+  // This function disable all todo edit mode 
+  const EditCancel = () => {
+    TodoList.value.map(todo => todo.edit = false);
+  }
+
+  /**
+   * This function is called from the child component 'TodoCard.vue' after submission to update the selected task
+   * @param {String} id 
+   * @param {String} title updated title
+   * @param {String} description updated description
+  */
 
   const EditTask = (id, title, description) => {
     TodoList.value.filter(t => {
@@ -42,17 +60,15 @@
       }
     });
 
-    // update storage
+    // update local storage
     Storage.store(TodoList.value);
 
     // toast notify
     NotifyPop(Notify, 'Task successfully updated!');
   }
 
-  const EditCancel = () => {
-    TodoList.value.map(todo => todo.edit = false);
-  }
-
+  // This function initiate the delete function
+  // delete model will be shown and the task which user want to delete will be updated to the ref
   const DeleteInitiate = (task) => {
     DeleteTodo.value = {
       show: true,
@@ -60,6 +76,11 @@
     }
   }
 
+  // This function finally delete the selected task
+  // step1: removed from the todo array list
+  // step2: delete model will be closed
+  // step3: update the local storage
+  // step4: show toast notification to the user
   const DeleteTask = () => {
     let toDelete = DeleteTodo.value.task.id;
     TodoList.value = TodoList.value.filter(todo => todo.id !== toDelete);
@@ -74,7 +95,7 @@
     NotifyPop(Notify, 'Task successfully deleted');
   }
 
-  // complete or incomplete tasks
+  // complete or incomplete tasks (toggled)
   const ToggleComplete = (task) => {
     TodoList.value.map(t => t.id === task.id ? t.completed = !t.completed : null);
 
@@ -88,6 +109,8 @@
     NotifyPop(Notify, 'Task updated');
   };
 
+  // this function add new task with unique id to the todo array list
+  // also update the local storage and show the toast notification
   const AddNewTask = (task) => {
     task['id'] = TodoUniqueId();
     TodoList.value.unshift(task);
@@ -99,7 +122,8 @@
     NotifyPop(Notify, 'New task added!');
   }
 
-
+  // once the component mounted 
+  // filtered the todo list with incomplete first and completed (default filter)
   onMounted(() => {
     FilterTodo('incomplete');
   });

@@ -114,6 +114,7 @@ const FilterComplete = (type) => {
     TodoList.value = (type == 'incomplete') ? slice1.concat(slice2) : slice2.concat(slice1);
 };
 
+// all filter settings for filter context menu in the app
 export const Filters = [
     {
             id: 1,

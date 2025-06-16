@@ -9,7 +9,9 @@
     });
 
     // emits
-    const emit = defineEmits(['cancel', 'delete']);
+    // cancel => to close the model
+    // delete => to delete the selected todo
+    const emits = defineEmits(['cancel', 'delete']);
 
 </script>
 
@@ -20,8 +22,8 @@
             <h4>Do you want to delete <strong>{{ task.title }}</strong> ?</h4>
         </div>
         <div class="action">
-            <button @click="emit('cancel')">Cancel</button>
-            <button @click="emit('delete')" class="addbtn">Delete</button>
+            <button @click="emits('cancel')">Cancel</button>
+            <button @click="emits('delete')" class="addbtn">Delete</button>
         </div>
     </div>
     <div class="overlay"></div>
