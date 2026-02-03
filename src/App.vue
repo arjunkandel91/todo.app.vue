@@ -11,7 +11,8 @@
   import { TodoWrap, TodoHeader, TodoCard, 
   EmptyTask, DeleteModel, Notification } from './components';
   
-  // todo delete object ref, property [show: true] will show the delete model
+  // todo delete object ref, property [show: true] will show the delete model 
+  // (delete this line later, this is test from codespaces)
   // and property [task] contains the object which user want to delete
   const DeleteTodo = ref({
     show: false,
