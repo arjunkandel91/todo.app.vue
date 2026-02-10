@@ -1,8 +1,8 @@
 <script setup>
-    
+    // vue import
     import { ref } from 'vue';
 
-    // props
+    // component props
     const props = defineProps({
         todo: {
             type: Object,
@@ -11,6 +11,11 @@
     });
 
     // emits
+    // editInit -> initiate edit action, shows input fields etc
+    // edit -> updates the task with updated title and descriptions
+    // delete -> initiate the delete function
+    // editCancel -> cancel the edit action (once clicked the 'cancel' button)
+    // complete -> toggle complete action of the task
     const emits = defineEmits(['editInit', 'edit', 'delete', 'editCancel', 'complete']);
 
     // for editing

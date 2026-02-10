@@ -43,7 +43,7 @@
     let ShowFilterMenu = ref(false);
     let SearchTxt = "";
 
-    // v-model
+    // v-model (task input fields)
     let title = '';
     let description = '';
 

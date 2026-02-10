@@ -1,6 +1,6 @@
 <script setup>
 
-    // props
+    // component props
     const props = defineProps({
         task: {
             type: Object,
