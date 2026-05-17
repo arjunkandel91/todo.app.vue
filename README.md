@@ -14,5 +14,5 @@ This project is a straightforward to-do application crafted in JavaScript. It en
 - Sorting tasks
 - Switching between dark and light theme
 
-App Screenshot
+### App Screenshot
 ![Todo Screenshot](https://github.com/arjunkandel91/todo.app.javascript/assets/45811982/419a4305-3c9a-4a1e-804b-01477c21d444)
